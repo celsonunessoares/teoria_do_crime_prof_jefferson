@@ -1,221 +1,270 @@
 <!DOCTYPE html>
-<html lang="pt-BR">
+<html lang="pt-BR" data-theme="light">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>JurisPrepara — Plataforma de Estudos e Simulados Jurídicos</title>
-    <link rel="stylesheet" href="./styles.css">
+    <title>JuriSimulados - Plataforma de Estudos e Simulados Jurídicos</title>
+    <link rel="stylesheet" href="./style.css">
 </head>
 
 <body>
 
+    <!-- Navigation Header -->
     <header>
-        <div class="header-container">
-            <div class="logo" role="button" tabindex="0" data-action="switch-view" data-screen="screen-home" aria-label="Ir para a tela inicial">
-                ⚖️ <span>JurisPrepara</span>
-                <span class="logo-badge">Pro</span>
+        <div class="nav-container">
+            <div class="brand" onclick="app.showView('view-home')">
+                <div class="brand-icon">⚖️</div>
+                <span>JuriSimulados</span>
             </div>
-            <nav class="nav-actions" aria-label="Navegação principal">
-                <button class="btn-icon" type="button" data-action="switch-view" data-screen="screen-study" title="Área de Estudos" aria-label="Abrir área de estudos">📚</button>
-                <button class="btn-icon" type="button" data-action="switch-view" data-screen="screen-review" title="Revisão de Questões" aria-label="Abrir revisão de questões">📝</button>
-                <button class="btn-icon" type="button" id="theme-toggle" data-action="toggle-theme" title="Alternar Tema" aria-label="Alternar tema">🌙</button>
-                <button class="btn-icon" type="button" data-action="confirm-reset" title="Resetar Progresso" aria-label="Resetar progresso">🔄</button>
-            </nav>
+            <div class="header-actions">
+                <button class="btn btn-danger btn-reset-all" onclick="app.confirmResetAll()">
+                    🔄 Reiniciar simulado completo
+                </button>
+                <button class="btn-theme" onclick="app.toggleTheme()" aria-label="Alternar Tema">
+                    <span id="theme-icon">🌙</span> <span id="theme-text">Escuro</span>
+                </button>
+            </div>
         </div>
     </header>
 
-    <main id="main-content">
-        <!-- TELA INICIAL (DASHBOARD) -->
-        <section id="screen-home" class="view-screen active">
-            <div class="hero-banner">
-                <h1>Preparação Jurídica & Simulados Avançados</h1>
-                <p>Estude a doutrina e legislação penal, responda aos simulados estruturados em 4 blocos e acompanhe seu
-                    desempenho detalhado por nível de dificuldade.</p>
-                <p class="hero-motivation">Ame, acredite, pense, grite, sonhe, conquiste, lute, batalhe, tenha força, tenha foco, tenha fé. Sorria e agradeça a Deus!</p>
-            </div>
+    <!-- Main Content Area -->
+    <main>
 
-            <div class="stats-overview">
-                <div class="stat-card">
-                    <span class="label">Progresso Geral</span>
-                    <span class="value" id="global-progress-text">0 / 160</span>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Taxa de Acertos</span>
-                    <span class="value" id="global-accuracy-text">0%</span>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Tempo Total</span>
-                    <span class="value" id="global-time-text">00:00</span>
-                </div>
-                <div class="stat-card">
-                    <span class="label">Status Global</span>
-                    <span class="value" id="global-status-text">Em Início</span>
+        <!-- VIEW 1: HOME / DASHBOARD -->
+        <section id="view-home" class="view active">
+            <div class="hero">
+                <h1>Plataforma de Estudos & Simulados Jurídicos</h1>
+                <p>Preparação de alta complexidade em Direito Penal. Baseado em doutrina, jurisprudência e normas
+                    fundamentadas.</p>
+                <p class="motivational-quote">&quot;Nos dias em que o cansa&ccedil;o apertar, pe&ccedil;a sabedoria e paci&ecirc;ncia. Deus honra o esfor&ccedil;o de quem busca crescer.&quot;</p>
+                <div class="overall-stats-bar">
+                    <div class="stat-item">
+                        <span class="stat-value" id="global-progress">0%</span>
+                        <span class="stat-label">Progresso Geral (160 Questões)</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="global-score">0 / 0</span>
+                        <span class="stat-label">Acertos / Respondidas</span>
+                    </div>
+                    <div class="stat-item">
+                        <span class="stat-value" id="global-time">00:00:00</span>
+                        <span class="stat-label">Tempo Total Acumulado</span>
+                    </div>
                 </div>
             </div>
 
-            <div class="section-toolbar">
-                <h2 class="section-title">📌 Blocos de Simulados (160 Questões)</h2>
-                <button class="btn btn-outline" type="button" data-action="switch-view" data-screen="screen-study" style="width: auto; padding: 0.4rem 0.8rem;">📖 Acessar Resumos</button>
+            <div class="section-header">
+                <h2 class="section-title">Blocos de Simulados</h2>
             </div>
 
-            <div class="blocks-grid" id="blocks-container">
-                <!-- Injetado via JS -->
+            <div class="blocks-grid" id="blocks-list">
+                <!-- Blocks rendered dynamically via JS -->
             </div>
         </section>
 
-        <!-- TELA ÁREA DE ESTUDOS (RESUMOS) -->
-        <section id="screen-study" class="view-screen">
-            <div class="section-toolbar">
-                <h2 class="section-title">📚 Área de Estudos — Resumos Doutrinários</h2>
-                <button class="btn btn-secondary" type="button" style="width: auto;" data-action="switch-view" data-screen="screen-home">⬅️ Voltar ao
-                    Início</button>
+        <!-- VIEW 2: STUDY AREA (RESUMOS) -->
+        <section id="view-study" class="view">
+            <div class="section-header">
+                <div>
+                    <span class="block-badge" id="study-block-badge">BLOCO 1</span>
+                    <h2 class="section-title" id="study-block-title">Área de Estudos e Resumos Materializados</h2>
+                </div>
+                <div style="display: flex; gap: 0.5rem;">
+                    <button class="btn btn-outline" onclick="app.showView('view-home')">⬅ Voltar aos Blocos</button>
+                    <button class="btn btn-primary" id="btn-start-quiz-from-study"
+                        onclick="app.startBlockFromStudy()">🚀 Iniciar Simulado</button>
+                </div>
             </div>
 
-            <div class="study-tabs" id="study-tabs" role="tablist" aria-label="Tópicos de estudo">
-                <button class="tab-btn active" type="button" role="tab" aria-selected="true" data-action="study-tab" data-index="0">1. Noções Introdutórias</button>
-                <button class="tab-btn" type="button" role="tab" aria-selected="false" data-action="study-tab" data-index="1">2. Fontes do Direito Penal</button>
-                <button class="tab-btn" type="button" role="tab" aria-selected="false" data-action="study-tab" data-index="2">3. A Norma Penal</button>
-                <button class="tab-btn" type="button" role="tab" aria-selected="false" data-action="study-tab" data-index="3">4. Princípios do Direito Penal</button>
-            </div>
+            <div class="study-container">
+                <p style="margin-bottom: 1rem; color: var(--text-secondary);">Revisão dogmática prévia indispensável
+                    baseada exclusivamente nos materiais oficiais de Direito Penal. Leia atentamente antes de prosseguir
+                    para as questões.</p>
 
-            <div id="study-content-area">
-                <!-- Injetado via JS -->
+                <div class="summary-accordion" id="study-content-accordion">
+                    <!-- Accordion items loaded dynamically based on active block -->
+                </div>
             </div>
         </section>
 
-        <!-- TELA DO SIMULADO (QUESTÕES) -->
-        <section id="screen-quiz" class="view-screen">
-            <div class="quiz-header">
+        <!-- VIEW 3: QUIZ INTERFACE -->
+        <section id="view-quiz" class="view">
+            <div class="quiz-header-bar">
                 <div class="quiz-info">
-                    <span style="font-weight: 700; font-size: 1.1rem;" id="quiz-block-title">Bloco 1</span>
-                    <span class="badge" id="quiz-diff-badge">MÉDIO</span>
-                    <span class="badge" id="quiz-topic-badge">Assunto</span>
-                </div>
-                <div style="display: flex; align-items: center; gap: 1rem;">
-                    <time class="quiz-timer" id="quiz-timer-display" role="timer" aria-live="off">00:00</time>
-                    <button class="btn btn-secondary" type="button" style="padding: 0.4rem 0.8rem;"
-                        data-action="exit-quiz">Sair</button>
-                </div>
-                <div style="width: 100%;">
-                    <div
-                        style="display: flex; justify-content: space-between; font-size: 0.85rem; color: var(--text-muted);">
-                        <span id="quiz-progress-text">Questão 1 de 40</span>
-                        <span id="quiz-stats-text">Acertos: 0 | Erros: 0</span>
+                    <span class="block-badge" id="quiz-block-badge">BLOCO 1</span>
+                    <div>
+                        <strong id="quiz-progress-text">Questão 1 de 40</strong>
+                        <div style="font-size: 0.8rem; color: var(--text-muted);" id="quiz-score-live">Acertos: 0 |
+                            Erros: 0</div>
                     </div>
-                    <div class="progress-bar-container">
-                        <div class="progress-bar-fill" id="quiz-progress-fill" role="progressbar" aria-label="Progresso do bloco" aria-valuemin="0" aria-valuemax="40" aria-valuenow="1"></div>
-                    </div>
+                </div>
+                <div class="quiz-timer">
+                    ⏱️ <span id="quiz-timer-display">00:00</span>
                 </div>
             </div>
 
-            <div class="question-card" id="question-card">
+            <div class="progress-outer">
+                <div class="progress-inner" id="quiz-progress-bar"></div>
+            </div>
+
+            <div style="margin-top: 1rem;"></div>
+
+            <div class="question-card">
                 <div class="question-meta">
-                    <span id="q-number-label">QUESTÃO 01</span>
-                    <span id="q-diff-label">Nível: Fácil</span>
-                </div>
-                <div class="question-text" id="q-text" aria-live="polite">Carregando enunciado...</div>
-
-                <div class="options-list" id="options-container">
-                    <!-- Opções injetadas via JS -->
+                    <span class="question-number" id="q-number">QUESTÃO 01</span>
+                    <span class="question-subject" id="q-subject">Assunto: Teoria do Crime</span>
+                    <span class="badge-diff" id="q-diff">MÉDIO</span>
                 </div>
 
-                <div class="explanation-box" id="explanation-box">
-                    <div class="explanation-status" id="explanation-status"></div>
-                    <div id="explanation-text" style="color: var(--text-secondary);"></div>
+                <div class="question-text" id="q-text">
+                    <!-- Enunciado denso e bem detalhado -->
                 </div>
 
-                <div style="display: flex; gap: 1rem; margin-top: 1.5rem;">
-                    <button class="btn btn-primary" type="button" id="btn-submit" data-action="submit-answer" disabled>RESPONDER</button>
-                    <button class="btn btn-secondary" type="button" id="btn-next" data-action="next-question"
-                        style="display: none;">PRÓXIMA QUESTÃO ➡️</button>
+                <form id="quiz-form" onsubmit="event.preventDefault();">
+                    <div class="options-list" id="q-options">
+                        <!-- Options generated dynamically -->
+                    </div>
+                </form>
+
+                <div class="explanation-box" id="q-explanation">
+                    <div class="explanation-title" id="exp-title">✓ RESPOSTA CORRETA!</div>
+                    <div class="explanation-content" id="exp-text">
+                        <!-- Fundamentação completa -->
+                    </div>
+                </div>
+
+                <div class="quiz-controls">
+                    <button class="btn btn-outline btn-danger" onclick="app.confirmResetCurrentBlock()">Reiniciar Este
+                        Bloco</button>
+                    <div style="display: flex; gap: 0.5rem; flex-wrap: wrap;">
+                        <button class="btn btn-outline" onclick="app.openStudyArea(app.currentBlockIndex)">📚 Revisar
+                            Resumo</button>
+                        <button class="btn btn-outline" id="btn-previous-question" onclick="app.previousQuestion()"
+                            disabled>⬅ Questão anterior</button>
+                        <button class="btn btn-primary" id="btn-submit-answer" onclick="app.submitAnswer()"
+                            disabled>Responder</button>
+                        <button class="btn btn-primary" id="btn-next-question" onclick="app.nextQuestion()"
+                            style="display: none;">Próxima Questão ➔</button>
+                    </div>
                 </div>
             </div>
         </section>
 
-        <!-- TELA RESULTADO DO BLOCO -->
-        <section id="screen-block-result" class="view-screen">
-            <div class="result-summary-card">
-                <h2 style="margin-bottom: 0.5rem;" id="res-block-title">Bloco 1 Concluído!</h2>
-                <p style="color: var(--text-muted); margin-bottom: 1.5rem;" id="res-block-subtitle">Confira o seu
-                    desempenho detalhado neste bloco de questões.</p>
-
-                <div class="result-score-circle">
-                    <span class="number" id="res-percent">0%</span>
-                    <span class="percent" id="res-ratio">0/40</span>
+        <!-- VIEW 4: BLOCK / FINAL RESULTS -->
+        <section id="view-results" class="view">
+            <div class="results-container">
+                <div class="results-header">
+                    <span class="block-badge" id="results-block-badge">RESULTADO DO BLOCO 1</span>
+                    <h2 class="results-title" id="results-title">Desempenho no Simulado</h2>
+                    <p style="color: var(--text-muted);" id="results-subtitle">Confira abaixo o detalhamento de seu
+                        rendimento jurídico.</p>
                 </div>
 
-                <h3 id="res-rating-text" style="color: var(--accent-primary); margin-bottom: 1rem;">Muito Bom!</h3>
+                <div class="score-circle">
+                    <span class="score-percentage" id="results-percentage">0%</span>
+                    <span class="score-label">Aproveitamento</span>
+                </div>
 
-                <p style="font-size: 0.95rem; color: var(--text-secondary); margin-bottom: 1.5rem;">
-                    Tempo utilizado: <strong id="res-time-spent">00min 00s</strong>
-                </p>
+                <div id="results-eval-badge" class="evaluation-badge eval-bom">BOM</div>
 
-                <h4 style="text-align: left; margin-bottom: 0.75rem; color: var(--text-primary);">Desempenho por Nível
-                    de Dificuldade:</h4>
-                <div class="difficulty-breakdown">
-                    <div class="diff-stat-item">
-                        <div class="title">FÁCIL</div>
-                        <div class="value" id="res-diff-easy">0/10</div>
+                <div class="results-grid">
+                    <div class="result-card">
+                        <h4>Total de Questões</h4>
+                        <div class="val" id="res-total">40</div>
                     </div>
-                    <div class="diff-stat-item">
-                        <div class="title">MÉDIO</div>
-                        <div class="value" id="res-diff-medium">0/10</div>
+                    <div class="result-card">
+                        <h4>Acertos</h4>
+                        <div class="val" style="color: var(--success-color);" id="res-correct">0</div>
                     </div>
-                    <div class="diff-stat-item">
-                        <div class="title">MÉDIO/ALTO</div>
-                        <div class="value" id="res-diff-medium-hard">0/10</div>
+                    <div class="result-card">
+                        <h4>Erros</h4>
+                        <div class="val" style="color: var(--error-color);" id="res-incorrect">0</div>
                     </div>
-                    <div class="diff-stat-item">
-                        <div class="title">DIFÍCIL</div>
-                        <div class="value" id="res-diff-hard">0/10</div>
+                    <div class="result-card">
+                        <h4>Tempo Utilizado</h4>
+                        <div class="val" id="res-time">00min 00s</div>
                     </div>
                 </div>
 
-                <div style="display: flex; flex-wrap: wrap; gap: 0.75rem; margin-top: 1.5rem;">
-                    <button class="btn btn-primary" type="button" data-action="switch-view" data-screen="screen-review">🔍 Revisar Questões</button>
-                    <button class="btn btn-secondary" type="button" data-action="switch-view" data-screen="screen-study">📖 Voltar aos
-                        Resumos</button>
-                    <button class="btn btn-outline" type="button" data-action="switch-view" data-screen="screen-home">🏠 Início</button>
+                <h3 style="text-align: left; margin-bottom: 1rem; font-size: 1.1rem;">Desempenho por Nível de
+                    Dificuldade</h3>
+                <div class="results-grid" style="margin-bottom: 2rem;">
+                    <div class="result-card">
+                        <h4>Fácil (10q)</h4>
+                        <div class="val" id="res-diff-easy">0%</div>
+                    </div>
+                    <div class="result-card">
+                        <h4>Médio (10q)</h4>
+                        <div class="val" id="res-diff-med">0%</div>
+                    </div>
+                    <div class="result-card">
+                        <h4>Médio / Alto (10q)</h4>
+                        <div class="val" id="res-diff-medhigh">0%</div>
+                    </div>
+                    <div class="result-card">
+                        <h4>Difícil (10q)</h4>
+                        <div class="val" id="res-diff-hard">0%</div>
+                    </div>
+                </div>
+
+                <div class="results-actions">
+                    <button class="btn btn-outline" onclick="app.showReview('all')">📖 Revisar Todas as
+                        Questões</button>
+                    <button class="btn btn-outline btn-danger" onclick="app.showReview('wrong')">⚠️ Revisar Apenas
+                        Erradas</button>
+                    <button class="btn btn-outline" onclick="app.openStudyArea(app.currentBlockIndex)">📚 Voltar ao
+                        Resumo</button>
+                    <button class="btn btn-primary" onclick="app.showView('view-home')">🏠 Menu Principal</button>
                 </div>
             </div>
         </section>
 
-        <!-- TELA REVISÃO DE QUESTÕES -->
-        <section id="screen-review" class="view-screen">
-            <div class="section-toolbar">
-                <h2 class="section-title">📝 Área de Revisão de Questões</h2>
-                <button class="btn btn-secondary" type="button" style="width: auto;" data-action="switch-view" data-screen="screen-home">⬅️
-                    Início</button>
+        <!-- VIEW 5: QUESTION REVIEW -->
+        <section id="view-review" class="view">
+            <div class="section-header">
+                <div>
+                    <h2 class="section-title">Revisão Detalhada de Questões</h2>
+                    <p style="color: var(--text-muted);" id="review-subtitle">Analise seus acertos, erros e as
+                        fundamentações teóricas.</p>
+                </div>
+                <button class="btn btn-outline" onclick="app.showView('view-results')">⬅ Voltar ao Resultado</button>
             </div>
 
-            <div class="review-filter" role="group" aria-label="Filtrar questões revisadas">
-                <button class="btn btn-secondary active" type="button" aria-pressed="true" style="width: auto; padding: 0.4rem 0.8rem;" id="filter-all"
-                    data-action="filter-review" data-filter="all">Todas Respondidas</button>
-                <button class="btn btn-secondary" type="button" aria-pressed="false" style="width: auto; padding: 0.4rem 0.8rem;" id="filter-wrong"
-                    data-action="filter-review" data-filter="wrong">Apenas Erradas ❌</button>
-                <button class="btn btn-secondary" type="button" aria-pressed="false" style="width: auto; padding: 0.4rem 0.8rem;" id="filter-correct"
-                    data-action="filter-review" data-filter="correct">Apenas Acertadas Visíveis</button>
+            <div class="review-filters">
+                <button class="btn btn-outline" id="filter-all-btn"
+                    onclick="app.renderReviewCards('all')">Todas</button>
+                <button class="btn btn-outline" id="filter-wrong-btn" onclick="app.renderReviewCards('wrong')">Somente
+                    Erradas</button>
+                <button class="btn btn-outline" id="filter-correct-btn"
+                    onclick="app.renderReviewCards('correct')">Somente Certas</button>
             </div>
 
-            <div id="review-list-container">
-                <!-- Lista de revisão injetada via JS -->
+            <div id="review-cards-list">
+                <!-- Review items loaded dynamically -->
             </div>
         </section>
+
     </main>
 
-    <!-- MODAL DE CONFIRMAÇÃO -->
-    <div class="modal-overlay" id="modal-confirm">
-        <div class="modal-card" role="dialog" aria-modal="true" aria-labelledby="modal-title" aria-describedby="modal-desc">
-            <h3 id="modal-title">Confirmação</h3>
-            <p id="modal-desc">Tem certeza de que deseja realizar esta ação?</p>
+    <!-- Modal Confirmation -->
+    <div class="modal-overlay" id="confirm-modal">
+        <div class="modal-content">
+            <div class="modal-title" id="modal-title">Confirmar Ação</div>
+            <div class="modal-body" id="modal-body">Tem certeza de que deseja realizar esta ação?</div>
             <div class="modal-actions">
-                <button class="btn btn-secondary" type="button" style="width: auto;" data-action="close-modal">Cancelar</button>
-                <button class="btn btn-primary" type="button" style="width: auto;" id="modal-btn-confirm" data-action="confirm-modal">Confirmar</button>
+                <button class="btn btn-outline" onclick="app.closeModal()">Cancelar</button>
+                <button class="btn btn-danger" id="modal-confirm-btn">Confirmar</button>
             </div>
         </div>
     </div>
 
+    <!-- Footer -->
+    <footer>
+        <p>© 2026 JuriSimulados — Plataforma de Simulados Jurídicos. Conteúdo dogmático estritamente fundamentado.</p>
+    </footer>
+
+    <!-- SCRIPT DA APLICAÇÃO E BANCO DE DADOS DE 160 QUESTÕES -->
     <script src="./app.js" defer></script>
 </body>
 
