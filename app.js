@@ -7,39 +7,82 @@
         // Função geradora e organizadora do banco de dados completo de 160 questões
         (function generateQuestionsDatabase() {
 
-            const assuntos = [{
-                    id: "M1",
-                    nome: "Noções Introdutórias e Criminologia",
-                    mat: "Material 1"
-                },
-                {
-                    id: "M2",
-                    nome: "Fontes do Direito Penal",
-                    mat: "Material 2"
-                },
-                {
-                    id: "M3",
-                    nome: "A Norma Penal e Conflito Aparente",
-                    mat: "Material 3"
-                },
-                {
-                    id: "M4",
-                    nome: "Princípios do Direito Penal",
-                    mat: "Material 4"
-                },
-                {
-                    id: "M5",
-                    nome: "Teoria do Crime - Fato Típico e Ilicitude",
-                    mat: "Material 5"
-                },
-                {
-                    id: "M6",
-                    nome: "Teoria do Crime - Culpabilidade e Iter Criminis",
-                    mat: "Material 6"
-                }
-            ];
-
             const dificuldades = ["Fácil", "Médio", "Médio/Alto", "Difícil"];
+
+            const buildQuestionVariant = (template, templateIndex, variantIndex) => {
+                if (variantIndex === 0) return template.enunciado;
+
+                const variants = [
+                    () => {
+                        const locations = ["no centro de uma capital", "em um bairro residencial", "no entorno de uma estação ferroviária", "em uma área comercial"];
+                        const disorders = ["pichações e danos leves a espaços públicos", "pequenos furtos e depredações", "desordem urbana e perturbação do sossego", "vandalismo e infrações de baixo potencial ofensivo"];
+                        return `Em uma política de segurança adotada ${locations[(variantIndex - 1) % 4]}, a administração decide reprimir sistematicamente ${disorders[Math.floor((variantIndex - 1) / 4)]}, sob o argumento de que a tolerância a infrações menores favoreceria crimes mais graves. Qual teoria criminológica fundamenta essa estratégia e qual é sua origem?`;
+                    },
+                    () => {
+                        const people = ["Helena", "Rafael", "Beatriz", "Otávio"];
+                        const properties = ["uma bicicleta", "um relógio", "um telefone celular", "uma mochila"];
+                        const person = people[(variantIndex - 1) % 4];
+                        const property = properties[Math.floor((variantIndex - 1) / 4)];
+                        return `${person} identifica quem furtou ${property} e, sem procurar as autoridades, vai até o endereço do suspeito e recupera o bem por conta própria. Considerando o monopólio estatal da punição e os limites da autotutela, como se qualifica juridicamente a conduta de ${person}?`;
+                    },
+                    () => {
+                        const states = ["Estado Alfa", "Estado Beta", "Estado Gama", "Estado Delta"];
+                        const subjects = ["uma espécie vegetal endêmica", "a fauna de uma região de fronteira", "a proteção de um aquífero local", "a preservação de uma espécie animal regional"];
+                        const state = states[(variantIndex - 1) % 4];
+                        const subject = subjects[Math.floor((variantIndex - 1) / 4)];
+                        return `A assembleia legislativa do ${state} aprova lei estadual que cria crime e pena para proteger exclusivamente ${subject}. Sem autorização de lei complementar federal, a norma é sancionada pelo governador. À luz da repartição constitucional de competências, a lei é válida?`;
+                    },
+                    () => {
+                        const practices = ["jogo do bicho", "manutenção de casa de prostituição", "exploração de jogo não autorizado", "outra conduta ainda prevista em tipo penal vigente"];
+                        const argumentsUsed = ["a tolerância social prolongada", "a ampla aceitação em determinada comunidade", "a baixa reprovação social atual", "a ausência de repressão habitual"];
+                        const practice = practices[(variantIndex - 1) % 4];
+                        const argument = argumentsUsed[Math.floor((variantIndex - 1) / 4)];
+                        return `Em processo por ${practice}, a defesa sustenta que ${argument} revogou tacitamente a norma penal, invocando costume abolicionista. Considerando a LINDB e a orientação prevalecente do STJ, essa tese pode afastar a vigência da lei?`;
+                    },
+                    () => {
+                        const acts = ["importar", "transportar", "guardar", "vender"];
+                        const settings = ["em fiscalização rodoviária", "durante operação portuária", "em investigação sobre comércio ilícito", "em inspeção de encomendas"];
+                        const act = acts[(variantIndex - 1) % 4];
+                        const setting = settings[Math.floor((variantIndex - 1) / 4)];
+                        return `Uma pessoa é investigada por ${act} substância cujo enquadramento como droga depende de lista editada pela ANVISA. A apuração ocorre ${setting}. Como se classifica a norma penal cujo preceito primário é complementado por ato de órgão diverso do legislador?`;
+                    },
+                    () => {
+                        const documents = ["um cheque falsificado", "uma nota fiscal falsa", "um recibo adulterado", "um documento particular falsificado"];
+                        const settings = ["em uma compra no comércio", "para obter mercadorias de uma loja", "em uma negociação de veículo", "para conseguir pagamento de um serviço"];
+                        const document = documents[(variantIndex - 1) % 4];
+                        const setting = settings[Math.floor((variantIndex - 1) / 4)];
+                        return `Para obter vantagem ilícita, uma pessoa usa ${document} ${setting}; a falsidade se exaure na fraude e não conserva potencialidade lesiva autônoma. À luz da Súmula 17 do STJ, qual princípio resolve o conflito aparente de normas e qual delito subsiste?`;
+                    },
+                    () => {
+                        const people = ["Lívia", "Caio", "Nádia", "Bruno"];
+                        const acts = ["provoca uma lesão em si mesma", "ingere substância para se ferir", "danifica apenas objeto de sua propriedade", "tenta tirar a própria vida"];
+                        const person = people[(variantIndex - 1) % 4];
+                        const act = acts[Math.floor((variantIndex - 1) / 4)];
+                        return `${person} ${act}, sem atingir terceiros, causar dano a bem alheio ou praticar fraude contra alguém. Qual princípio limita a intervenção penal quando a conduta fica restrita à esfera do próprio agente?`;
+                    },
+                    () => {
+                        const goods = ["um alimento", "um produto de higiene", "um item de vestuário", "um material escolar"];
+                        const values = ["R$ 8,00", "R$ 15,00", "R$ 28,00", "R$ 45,00"];
+                        const good = goods[(variantIndex - 1) % 4];
+                        const value = values[Math.floor((variantIndex - 1) / 4)];
+                        return `Uma pessoa primária subtrai de um estabelecimento ${good} avaliado em ${value}, sem violência; o objeto é restituído. Para analisar a incidência do princípio da insignificância, quais são os vetores cumulativos estabelecidos pelo STF?`;
+                    },
+                    () => {
+                        const contexts = ["em uma aula de Direito Penal", "em uma sentença sobre crime patrimonial", "em uma prova de teoria geral do delito", "em um parecer sobre a estrutura do crime"];
+                        const prompts = ["quais elementos compõem o conceito analítico tripartido de crime", "como se organiza a teoria tripartida adotada pela doutrina majoritária", "quais categorias devem estar presentes para a configuração analítica do crime", "qual estrutura dogmática reúne tipicidade, ilicitude e censura pessoal"];
+                        return `Ao analisar a teoria do crime ${contexts[(variantIndex - 1) % 4]}, o estudante deve identificar ${prompts[Math.floor((variantIndex - 1) / 4)]}. Qual é a resposta correta segundo a doutrina majoritária brasileira?`;
+                    },
+                    () => {
+                        const people = ["Marcos", "Joana", "Davi", "Paula"];
+                        const methods = ["disparar contra a vítima, ainda dispondo de munições", "ministrar veneno, ainda podendo continuar a execução", "asfixiar a vítima, que permanece viva", "atear fogo ao cômodo onde a vítima está"];
+                        const person = people[(variantIndex - 1) % 4];
+                        const method = methods[Math.floor((variantIndex - 1) / 4)];
+                        return `${person} tenta matar a vítima ao ${method}, mas, sem qualquer interferência externa e ainda podendo prosseguir, decide espontaneamente interromper a execução. Considerando o art. 15 do Código Penal, qual instituto se aplica e por quais atos ${person} responde?`;
+                    }
+                ];
+
+                return variants[templateIndex]();
+            };
 
             // Modelos de enunciados jurídicos complexos e densos baseados na doutrina dos materiais
             const templates = [
@@ -155,7 +198,7 @@
                 {
                     assunto: "Teoria do Crime - Culpabilidade e Iter Criminis",
                     enunciado: "Marcos, munido de uma arma de fogo com seis munições, efetuou dois disparos contra seu desafeto com intenção homicida, atingindo-o na perna. Embora ainda dispusesse de mais quatro munições intactas e pudesse continuar disparando até matar a vítima, Marcos voluntariamente decidiu cessar os disparos, prestando socorro imediato e levando o atingido ao hospital, onde este sobreviveu. Nos termos do art. 15 do Código Penal, o instituto jurídico configurado na conduta de Marcos é:",
-                    correct: "Desistência voluntária (ou arrependimento eficaz), respondendo Marcos apenas pelos atos já praticados (lesão corporal), afastando-se a tentativa de homicídio.",
+                    correct: "Desistência voluntária (art. 15 do CP): o agente responde apenas pelos atos já praticados, afastando-se a tentativa do crime pretendido.",
                     wrongs: [
                         "Arrependimento posterior (art. 16 do CP), permitindo a redução da pena do homicídio tentado de um a dois terços.",
                         "Tentativa inacabada (ou imperfeita) por circunstâncias alheias à vontade do agente, devendo responder por tentativa de homicídio.",
@@ -176,29 +219,10 @@
 
                     // Criar 10 questões para este nível de dificuldade no bloco b
                     for (let qCount = 1; qCount <= 10; qCount++) {
-                        // Selecionar assunto ciclicamente
-                        const tObj = templates[(globalId - 1) % templates.length];
-                        const assuntoInfo = assuntos[(globalId - 1) % assuntos.length];
-
-                        // Construção do enunciado contextualizado longo e juridicamente rico
-                        let prefixoCaso = "";
-                        if (diffName === "Fácil") {
-                            prefixoCaso =
-                                `[BLOCO ${b} - FÁCIL] (Análise de Conceito Fundamental - ${assuntoInfo.nome}): `;
-                        } else if (diffName === "Médio") {
-                            prefixoCaso =
-                                `[BLOCO ${b} - MÉDIO] (Interpretação e Aplicação de Regra Jurídica - ${assuntoInfo.nome}): `;
-                        } else if (diffName === "Médio/Alto") {
-                            prefixoCaso =
-                                `[BLOCO ${b} - MÉDIO/ALTO] (Estudo de Caso Hipotético e Exceções Normativas - ${assuntoInfo.nome}): `;
-                        } else {
-                            prefixoCaso =
-                                `[BLOCO ${b} - DIFÍCIL] (Caso Concreto Complexo, Divergência e Dogmática Aprofundada - ${assuntoInfo.nome}): `;
-                        }
-
-                        // Variação narrativa para garantir que nenhuma questão seja repetida
-                        let enunciadoCompleto = prefixoCaso + tObj.enunciado +
-                            ` (Situação de análise nº ${globalId} - Exame Jurídico Penal).`;
+                        const templateIndex = (globalId - 1) % templates.length;
+                        const tObj = templates[templateIndex];
+                        const variantIndex = Math.floor((globalId - 1) / templates.length);
+                        const enunciadoCompleto = buildQuestionVariant(tObj, templateIndex, variantIndex);
 
                         // Alternativas
                         let alts = [{
@@ -223,7 +247,7 @@
                             id: globalId,
                             bloco: b,
                             dificuldade: diffName,
-                            assunto: assuntoInfo.nome,
+                            assunto: tObj.assunto,
                             enunciado: enunciadoCompleto,
                             alternativasRaw: alts,
                             explicacao: tObj.exp
@@ -232,6 +256,14 @@
                         globalId++;
                     }
                 }
+
+            }
+
+            const normalizedQuestions = QUESTOES_DATABASE.map(question =>
+                question.enunciado.trim().replace(/\s+/g, " ").toLocaleLowerCase("pt-BR")
+            );
+            if (QUESTOES_DATABASE.length !== 160 || new Set(normalizedQuestions).size !== QUESTOES_DATABASE.length) {
+                throw new Error("O banco de questões deve conter exatamente 160 enunciados únicos.");
             }
         })();
 
