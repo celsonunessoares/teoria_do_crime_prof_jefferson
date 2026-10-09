@@ -278,37 +278,88 @@
         const savedAnswersForMigration = JSON.parse(localStorage.getItem('juris_userAnswers') || '{}');
 
         function shuffleQuestionAlternatives(questionId, alternatives, correctLetter) {
-            const seedStart = (questionId * 2654435761) >>> 0;
-            let seed = seedStart;
-            const random = () => {
-                seed = (seed * 1664525 + 1013904223) >>> 0;
-                return seed / 4294967296;
-            };
-            const shuffled = Object.entries(alternatives).map(([letter, text]) => ({
-                text,
-                isCorrect: letter === correctLetter
-            }));
+        // Gerador pseudoaleatório reproduzível para cada questão.
+        // Mantém a mesma ordem ao recarregar a página.
+        function createRandom(seedValue) {
+        let seed = seedValue >>> 0;
 
-            for (let i = shuffled.length - 1; i > 0; i--) {
-                const j = Math.floor(random() * (i + 1));
-                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
-            }
-
-            const letters = ["A", "B", "C", "D"];
-            const mappedAlternatives = {};
-            let mappedCorrectLetter = "";
-
-            shuffled.forEach((alternative, index) => {
-                const letter = letters[index];
-                mappedAlternatives[letter] = alternative.text;
-                if (alternative.isCorrect) mappedCorrectLetter = letter;
-            });
-
-            return {
-                alternatives: mappedAlternatives,
-                correctLetter: mappedCorrectLetter
-            };
+        return function () {
+        seed = (seed * 1664525 + 1013904223) >>> 0;
+        return seed / 4294967296;
+        };
         }
+
+        const letters = ["A", "B", "C", "D"];
+
+        // Identifica a posição da questão dentro de um grupo de quatro.
+        const groupIndex = Math.floor((questionId - 1) / 4);
+        const positionInGroup = (questionId - 1) % 4;
+
+        // Embaralha a distribuição do gabarito em cada grupo de quatro.
+        // Cada grupo terá uma resposta A, uma B, uma C e uma D.
+        const groupLetters = [...letters];
+        const groupRandom = createRandom(918273 + groupIndex * 7919);
+
+        for (let i = groupLetters.length - 1; i > 0; i--) {
+        const j = Math.floor(groupRandom() * (i + 1));
+        [groupLetters[i], groupLetters[j]] =
+        [groupLetters[j], groupLetters[i]];
+        }
+
+        const targetCorrectLetter = groupLetters[positionInGroup];
+
+        // Cria a lista de alternativas identificando a resposta correta.
+        const shuffled = Object.entries(alternatives).map(
+        ([letter, text]) => ({
+        text,
+        isCorrect: letter === correctLetter
+        })
+        );
+
+        // Embaralha todas as alternativas da questão.
+        const random = createRandom(questionId * 2654435761);
+
+        for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+        }
+
+        // Garante que o gabarito fique na letra planejada.
+        const correctIndex = shuffled.findIndex(
+        alternative => alternative.isCorrect
+        );
+
+        const targetIndex = letters.indexOf(targetCorrectLetter);
+
+        if (correctIndex === -1) {
+        throw new Error(
+        `Questão ${questionId}: alternativa correta não encontrada.`
+        );
+        }
+
+        [shuffled[correctIndex], shuffled[targetIndex]] =
+        [shuffled[targetIndex], shuffled[correctIndex]];
+
+        // Reconstrói as alternativas A, B, C e D.
+        const mappedAlternatives = {};
+        let mappedCorrectLetter = "";
+
+        shuffled.forEach((alternative, index) => {
+        const letter = letters[index];
+
+        mappedAlternatives[letter] = alternative.text;
+
+        if (alternative.isCorrect) {
+        mappedCorrectLetter = letter;
+        }
+        });
+
+        return {
+        alternatives: mappedAlternatives,
+        correctLetter: mappedCorrectLetter
+        };
+        }
+
 
         // Helper to generate the exact 160 questions structured across 4 blocks with strict distribution
         function generateQuestionsBank() {
