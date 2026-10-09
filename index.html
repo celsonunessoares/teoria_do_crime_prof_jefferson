@@ -273,9 +273,24 @@
         ];
 
         let questionsData = [];
-        const QUESTION_BANK_VERSION = "shuffled-options-v1";
-        const answerBankNeedsMigration = localStorage.getItem('juris_answerBankVersion') !== QUESTION_BANK_VERSION;
-        const savedAnswersForMigration = JSON.parse(localStorage.getItem('juris_userAnswers') || '{}');
+        const QUESTION_BANK_VERSION = "balanced-shuffle-v2";
+
+        const previousQuestionBankVersion =
+        localStorage.getItem("juris_answerBankVersion");
+
+        const answerBankNeedsMigration =
+        previousQuestionBankVersion !== QUESTION_BANK_VERSION;
+
+        // O gabarito e a ordem das alternativas mudaram.
+        // Evita reaproveitar letras respondidas com a versão anterior.
+        const savedAnswersForMigration = answerBankNeedsMigration
+        ? {}
+        : JSON.parse(localStorage.getItem("juris_userAnswers") || "{}");
+
+        if (answerBankNeedsMigration) {
+        localStorage.setItem("juris_userAnswers", "{}");
+        }
+
 
         function shuffleQuestionAlternatives(questionId, alternatives, correctLetter) {
         // Gerador pseudoaleatório reproduzível para cada questão.
